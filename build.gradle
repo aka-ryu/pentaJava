@@ -25,9 +25,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
-
-	// https://mvnrepository.com/artifact/org.postgresql/postgresql
-	implementation 'org.postgresql:postgresql:42.3.3'
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
 
 }
 

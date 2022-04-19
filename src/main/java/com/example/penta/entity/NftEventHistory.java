@@ -1,6 +1,8 @@
 package com.example.penta.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -52,9 +54,11 @@ public class NftEventHistory {
     @Column(name = "tx_id")
     private String txId;
 
+    @CreatedDate
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @LastModifiedDate
     @Column(name = "updated_at")
     private Instant updatedAt;
 

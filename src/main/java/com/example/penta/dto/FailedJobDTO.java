@@ -19,24 +19,5 @@ public class FailedJobDTO {
     private String payload;
     private String exception;
 
-    public FailedJobDTO(FailedJob failedJob) {
-        this.id = failedJob.getId();
-        this.uuid = failedJob.getUuid();
-        this.connection = failedJob.getConnection();
-        this.queue = failedJob.getQueue();
-        this.payload = failedJob.getPayload();
-        this.exception = failedJob.getException();
-    }
-
- public static FailedJob toEntity(FailedJobDTO failedJobDTO) {
-        return FailedJob.builder()
-                .id(failedJobDTO.getId())
-                .uuid(failedJobDTO.getUuid())
-                .connection(failedJobDTO.getConnection())
-                .queue(failedJobDTO.getQueue())
-                .payload(failedJobDTO.getPayload())
-                .exception(failedJobDTO.getException())
-                .build();
- }
 
 }

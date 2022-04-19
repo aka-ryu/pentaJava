@@ -1,9 +1,12 @@
 package com.example.penta.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "nft_asset_metadata")
@@ -98,11 +101,13 @@ public class NftAssetMetadatum {
     @Column(name = "serial_number")
     private String serialNumber;
 
+    @CreatedDate
     @Column(name = "created_at")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
+    @LastModifiedDate
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
 
 }

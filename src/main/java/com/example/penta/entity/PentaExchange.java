@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "penta_exchange")
@@ -58,16 +60,16 @@ public class PentaExchange {
     private String price;
 
     @Column(name = "blocktime")
-    private Instant blocktime;
+    private Date blocktime;
 
     @Column(name = "is_check", nullable = false)
     private Integer isCheck;
 
     @Column(name = "created_at")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
 
 }

@@ -1,9 +1,13 @@
 package com.example.penta.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "penta_fail_mint")
@@ -34,13 +38,15 @@ public class PentaFailMint {
     private String contractAddr;
 
     @Column(name = "blocktime")
-    private Instant blocktime;
+    private Date blocktime;
 
+    @CreatedDate
     @Column(name = "created_at")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
+    @LastModifiedDate
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
 
 }
