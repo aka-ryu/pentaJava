@@ -1,6 +1,9 @@
 package com.example.penta.entity;
 
+import com.sun.istack.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -15,10 +18,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Builder
+@DynamicInsert
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "wallet_address", nullable = false)
@@ -36,7 +39,10 @@ public class User {
     @Column(name = "remember_token", length = 100)
     private String rememberToken;
 
-    @Column(name = "is_certified", nullable = false)
+
+    @NotNull
+    @ColumnDefault("0")
+    @Column(name = "is_certified")
     private Integer isCertified;
 
     @CreatedDate
