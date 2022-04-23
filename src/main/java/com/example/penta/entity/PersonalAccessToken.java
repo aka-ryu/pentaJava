@@ -3,6 +3,8 @@ package com.example.penta.entity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -16,6 +18,7 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class PersonalAccessToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,5 +55,17 @@ public class PersonalAccessToken {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    public static PersonalAccessToken lastUsedAt(PersonalAccessToken personalAccessToken) {
+        PersonalAccessToken updateToken = PersonalAccessToken.builder()
+                .id(personalAccessToken.getId())
+                .tokenableType(personalAccessToken.getTokenableType())
+                .tokenableId(personalAccessToken.getTokenableId())
+                .name(personalAccessToken.getName())
+                .token(personalAccessToken.getToken())
+                .lastUsedAt(new Date())
+                .createdAt(personalAccessToken.getCreatedAt())
+                .build();
 
+        return updateToken;
+    }
 }

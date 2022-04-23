@@ -6,6 +6,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Builder
-@DynamicInsert
+@EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,10 +40,7 @@ public class User {
     @Column(name = "remember_token", length = 100)
     private String rememberToken;
 
-
-    @NotNull
-    @ColumnDefault("0")
-    @Column(name = "is_certified")
+    @Column(name = "is_certified", nullable = false)
     private Integer isCertified;
 
     @CreatedDate
