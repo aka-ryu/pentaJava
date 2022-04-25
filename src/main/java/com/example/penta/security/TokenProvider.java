@@ -57,20 +57,17 @@ public class TokenProvider {
 
     public String getTokenBody(String token) {
 
+        String tokenBody;
+
         try {
             String[] getTokenArray = token.split("\\.");
-            System.out.println(token);
-
-
-            for(String t : getTokenArray){
-                System.out.println(t);
-            }
+            tokenBody = getTokenArray[1];
 
         } catch (Exception e) {
             log.error(e.getMessage());
+            tokenBody = null;
         }
-        return null;
-
+        return tokenBody;
     }
 
 
