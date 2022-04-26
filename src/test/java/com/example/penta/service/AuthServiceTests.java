@@ -2,13 +2,13 @@ package com.example.penta.service;
 
 import com.example.penta.dto.protocol.request.LoginRequestDTO;
 import com.example.penta.dto.protocol.response.LoginResponseDTO;
+import com.example.penta.entity.NftMarket;
 import com.example.penta.entity.PersonalAccessToken;
 import com.example.penta.entity.User;
 import com.example.penta.entity.UserProfile;
-import com.example.penta.repository.PersonalAccessTokenRepository;
-import com.example.penta.repository.UserProfileRepository;
-import com.example.penta.repository.UserRepositroy;
+import com.example.penta.repository.*;
 import com.example.penta.security.TokenProvider;
+import jdk.swing.interop.SwingInterOpUtils;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +43,12 @@ public class AuthServiceTests {
 
     @Autowired
     private UpdateAtService updateAtService;
+
+    @Autowired
+    private NftAssetRepository nftAssetRepository;
+
+    @Autowired
+    private NftMarketRepository nftMarketRepository;
 
     // req wallet_address, blockchain, signature
     @Test
@@ -143,6 +150,33 @@ public class AuthServiceTests {
 
     }
 
+    // 프로필셋팅
+//    @Test
+//    public void testTokenInfo() {
+//        LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder()
+//                .wallet_address("0xE33f5e0C73B19C13F873AC9Ccf1e17F4735cD2F1")
+//                .blockchain("ethereum")
+//                .build();
+//
+//        Optional<User> optionalUser = userRepositroy.findByWalletAddressAndBlockchain(loginRequestDTO.getWallet_address(), loginRequestDTO.getBlockchain());
+//
+//        if(optionalUser.isEmpty()) {
+//            System.out.println("유저없음");
+//            throw new RuntimeException("유저없음");
+//        }
+//
+//        User user = optionalUser.get();
+//    }
 
+    @Test
+    public void jpqlTests() {
+
+        System.out.println(nftMarketRepository.findAll());
+//        List<Long> ids = nftAssetRepository.findIdList("0xe33f5e0c73b19c13f873ac9ccf1e17f4735cd2fe");
+//        System.out.println(ids);
+//
+//        System.out.println(nftMarketRepository.marketAsset(ids));
+
+    }
 }
 

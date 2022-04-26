@@ -8,8 +8,5 @@ import java.util.Optional;
 public interface PersonalAccessTokenRepository extends JpaRepository<PersonalAccessToken, Long> {
     Optional<PersonalAccessToken> findByToken(String token);
 
-
-
-
     Optional<PersonalAccessToken> findByTokenableId(Long tokenable_id);
 }

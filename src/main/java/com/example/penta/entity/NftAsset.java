@@ -34,7 +34,7 @@ public class NftAsset {
     @Column(name = "contract_address")
     private String contractAddress;
 
-    @Column(name = "token_id")
+    @Column(name = "token_id", unique = true)
     private String tokenId;
 
     @Column(name = "token_num")
