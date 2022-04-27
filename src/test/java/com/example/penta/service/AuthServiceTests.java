@@ -8,6 +8,7 @@ import com.example.penta.entity.User;
 import com.example.penta.entity.UserProfile;
 import com.example.penta.repository.*;
 import com.example.penta.security.TokenProvider;
+import javassist.expr.NewArray;
 import jdk.swing.interop.SwingInterOpUtils;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -169,13 +171,24 @@ public class AuthServiceTests {
 //    }
 
     @Test
-    public void jpqlTests() {
+    public void ListTests() {
 
-        System.out.println(nftMarketRepository.findAll());
-//        List<Long> ids = nftAssetRepository.findIdList("0xe33f5e0c73b19c13f873ac9ccf1e17f4735cd2fe");
-//        System.out.println(ids);
-//
-//        System.out.println(nftMarketRepository.marketAsset(ids));
+        List<Integer> intList = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            intList.add(i);
+            intList.add(null);
+        }
+
+        System.out.println(intList);
+        System.out.println(intList.get(2));
+        while(intList.remove(null));
+        System.out.println("삭제완료");
+        System.out.println(intList);
+        System.out.println(intList.get(2));
+
+
+
 
     }
 }

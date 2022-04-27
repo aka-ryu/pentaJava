@@ -2,24 +2,17 @@ package com.example.penta.service;
 
 import com.example.penta.dto.UserDTO;
 import com.example.penta.dto.protocol.request.LoginRequestDTO;
-import com.example.penta.dto.protocol.response.LoginResponseDTO;
-import com.example.penta.dto.protocol.response.ProfileInfoResponseDTO;
-import com.example.penta.dto.protocol.response.ResponseDTO;
-import com.example.penta.dto.protocol.response.TokenInfoResponseDTO;
-import com.example.penta.entity.NftAsset;
-import com.example.penta.entity.PersonalAccessToken;
-import com.example.penta.entity.User;
-import com.example.penta.entity.UserProfile;
-import com.example.penta.repository.NftAssetRepository;
-import com.example.penta.repository.PersonalAccessTokenRepository;
-import com.example.penta.repository.UserProfileRepository;
-import com.example.penta.repository.UserRepositroy;
+import com.example.penta.dto.protocol.response.*;
+import com.example.penta.entity.*;
+import com.example.penta.repository.*;
 import com.example.penta.security.TokenProvider;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.handler.IgnoreTopLevelConverterNotFoundBindHandler;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -48,6 +41,15 @@ public class AuthService {
 
     @Autowired
     private NftAssetRepository nftAssetRepository;
+
+    @Autowired
+    private NftMarketRepository nftMarketRepository;
+
+    @Autowired
+    private UserFavoriteRepository userFavoriteRepository;
+
+    @Autowired
+    private NftEventHistoryRepository nftEventHistoryRepository;
 
 
     public User registerUser(LoginRequestDTO loginRequestDTO) {
@@ -289,55 +291,6 @@ public class AuthService {
         return profileInfoResponseDTO;
     }
 
-    public void userItemCount(LoginRequestDTO loginRequestDTO) {
 
-        // 유효한 값이 들어왔는지 확인
-        if (loginRequestDTO.getBlockchain().isEmpty() || loginRequestDTO.getWallet_address().isEmpty()
-                || loginRequestDTO.getBlockchain().equals("") || loginRequestDTO.getWallet_address().equals("")) {
-
-            log.warn("blockchain, wallet_address 값이 없음");
-            throw new RuntimeException("blockchain, wallet_address 값 없음");
-        }
-
-        // walletAddress 소문자처리
-        loginRequestDTO.setWallet_address(loginRequestDTO.getWallet_address().toLowerCase());
-
-        // 받은 블록체인,지갑주소로 유저 조회
-        Optional<User> optionalUser = userRepositroy.findByWalletAddressAndBlockchain(loginRequestDTO.getWallet_address(), loginRequestDTO.getBlockchain());
-
-        if (optionalUser.isEmpty()) {
-            log.warn("유저없음");
-            throw new RuntimeException("유저없음");
-        }
-
-        User user = optionalUser.get();
-
-        // 유저의 pk로 생성된 토큰 조회
-        Optional<PersonalAccessToken> optionalPersonalAccessToken = personalAccessTokenRepository.findByTokenableId(user.getId());
-
-        if (optionalPersonalAccessToken.isEmpty()) {
-            log.warn("토큰없음");
-            throw new RuntimeException("토큰없음");
-        }
-
-        PersonalAccessToken personalAccessToken = optionalPersonalAccessToken.get();
-
-        // 유저의 토큰 체크 (jwt body로 지갑주소를 넣었음)
-        if (!user.getWalletAddress().equals(personalAccessToken.getToken())) {
-            log.warn("토큰 정보 오류");
-            throw new RuntimeException("토큰 정보 오류");
-        }
-
-        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByUser(user);
-
-        if(optionalUserProfile.isEmpty()) {
-            log.warn("유저프로필 없음");
-            throw new RuntimeException("유저프로필 없음");
-        }
-
-        List<NftAsset> arrayIds = nftAssetRepository.findAllByOwnerAddress(user.getWalletAddress());
-        List<Long> ownedIds = nftAssetRepository.findIdList(user.getWalletAddress());
-
-    }
 }
 

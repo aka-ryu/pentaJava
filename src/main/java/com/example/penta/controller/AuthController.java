@@ -31,6 +31,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> userRegister(LoginRequestDTO loginRequestDTO) {
 
+        log.info("레지스터 진입");
         try {
             User user = authService.registerUser(loginRequestDTO);
             LoginResponseDTO loginResponseDTO = authService.loginUser(loginRequestDTO, user);
@@ -65,6 +66,7 @@ public class AuthController {
     @PostMapping("/tokeninfo")
     public ResponseEntity<?> tokenInfo(LoginRequestDTO loginRequestDTO, @AuthenticationPrincipal String userId) {
 
+        log.info("토큰인포 진입");
         try {
             TokenInfoResponseDTO tokenInfoResponseDTO = authService.tokenInfo(loginRequestDTO);
             ResponseDTO responseDTO = ResponseDTO.builder()
@@ -116,8 +118,4 @@ public class AuthController {
         }
     }
 
-//    @PostMapping("/useritem_count")
-//    public ResponseEntity<?> userItemCount(LoginRequestDTO loginRequestDTO){
-//
-//    }
 }

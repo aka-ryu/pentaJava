@@ -11,13 +11,42 @@ import java.util.Optional;
 @Repository
 public interface NftAssetRepository extends JpaRepository<NftAsset, Long> {
 
+    List<NftAsset> findByCreatorAddress(String creatorAddress);
+
+    // assetInfo
     List<NftAsset> findAllByOwnerAddress(String ownerAddress);
 
+    // arrayIds
+    @Query("SELECT n.id FROM NftAsset n WHERE n.ownerAddress = ?1")
+    List<Long> arrayIds(String ownerAddress);
+
+    // ownedInfo
+    @Query("SELECT n FROM NftAsset n WHERE n.ownerAddress = ?1 GROUP BY n.tokenId")
+    List<NftAsset> ownedInfo(String ownerAddress);
+
+    // ownedIds
     @Query("SELECT n.id FROM NftAsset n WHERE n.ownerAddress = ?1 GROUP BY n.tokenId")
-    List<Long> findIdList(String ownerAddress);
+    List<Long> ownedIds(String ownerAddress);
 
+    // assetInfo01
+    @Query("SELECT n.id FROM NftAsset n WHERE n.id = ?1 AND n.ownerAddress = ?2 AND n.quantity = 0")
+    Optional<Long> optionalAssetInfo01(Long id, String ownerAddress);
 
+    // assetInfo02
+    @Query("SELECT n.id FROM NftAsset n WHERE n.id = ?1 AND n.ownerAddress = ?2 AND n.quantity = 0 AND n.id NOT IN ?3")
+    Optional<Long> optionalAssetInfo02(Long id, String ownerAddress, List<Long> endIds);
 
+    // assetIds
+    @Query("SELECT n FROM NftAsset n WHERE n.ownerAddress = ?1 AND n.id IN ?2")
+    List<NftAsset> assetIds(String ownerAddress, List<Long> ids);
+
+    // allAsset
+    @Query("SELECT COUNT(DISTINCT n.tokenId) FROM NftAsset n WHERE n.creatorAddress = ?1 OR n.ownerAddress = ?2")
+    Long allAssetCount(String creatorAddress, String ownerAddress);
+
+    // freezeCount
+    @Query("SELECT COUNT(DISTINCT n.tokenId) FROM NftAsset n WHERE n.ownerAddress = ?1 AND n.isMint = 0")
+    Long freezeCount(String ownerAddress);
 
 
 
