@@ -1,4 +1,4 @@
-package com.example.penta.dto;
+package com.example.penta.dto.entityDTO;
 
 import com.example.penta.entity.NftMarket;
 import com.example.penta.entity.User;

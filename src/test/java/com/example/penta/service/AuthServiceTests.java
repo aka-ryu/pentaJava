@@ -1,28 +1,22 @@
 package com.example.penta.service;
 
-import com.example.penta.dto.protocol.request.LoginRequestDTO;
-import com.example.penta.dto.protocol.response.LoginResponseDTO;
-import com.example.penta.entity.NftMarket;
+import com.example.penta.dto.protocol.request.auth.RegisterReqDTO;
 import com.example.penta.entity.PersonalAccessToken;
 import com.example.penta.entity.User;
 import com.example.penta.entity.UserProfile;
 import com.example.penta.repository.*;
 import com.example.penta.security.TokenProvider;
-import javassist.expr.NewArray;
-import jdk.swing.interop.SwingInterOpUtils;
+import com.example.penta.service.etc.UpdateJWTService;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 @Log4j2
@@ -44,7 +38,7 @@ public class AuthServiceTests {
     private TokenProvider tokenProvider;
 
     @Autowired
-    private UpdateAtService updateAtService;
+    private UpdateJWTService updateAtService;
 
     @Autowired
     private NftAssetRepository nftAssetRepository;
@@ -57,25 +51,25 @@ public class AuthServiceTests {
     public void registerUser() {
 
         // 테스트 데이터 생성
-        LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder()
+        RegisterReqDTO registerReqDTO = RegisterReqDTO.builder()
                 .wallet_address("0xE33f5e0C73B19C13F873AC9Ccf1e17F4735cD2F1")
                 .blockchain("ethereum")
                 .signature("test")
                 .build();
 
         // 지갑주소 소문자 변경
-        String toLower = loginRequestDTO.getWallet_address().toLowerCase();
+        String toLower = registerReqDTO.getWallet_address().toLowerCase();
 
         // npe Optional
-        Optional<User> optionalUser = userRepositroy.findByWalletAddressAndBlockchain(loginRequestDTO.getWallet_address(), loginRequestDTO.getBlockchain());
+        Optional<User> optionalUser = userRepositroy.findByWalletAddressAndBlockchain(registerReqDTO.getWallet_address(), registerReqDTO.getBlockchain());
 
         // 기존회원이 아니면 회원가입
         if (optionalUser.isEmpty()) {
             String uuid = UUID.randomUUID().toString();
 
             User user = User.builder()
-                    .walletAddress(loginRequestDTO.getWallet_address())
-                    .blockchain(loginRequestDTO.getBlockchain())
+                    .walletAddress(registerReqDTO.getWallet_address())
+                    .blockchain(registerReqDTO.getBlockchain())
                     .uuidUser(uuid)
                     .depositFund(null)
                     .rememberToken(null)
@@ -103,14 +97,14 @@ public class AuthServiceTests {
     public void loginUser() {
 
         // 테스트 loginRequest 생성
-        LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder()
+        RegisterReqDTO registerReqDTO = RegisterReqDTO.builder()
                 .wallet_address("0xE33f5e0C73B19C13F873AC9Ccf1e17F4735cD2F1")
                 .blockchain("ethereum")
                 .signature("test")
                 .build();
 
         // 테스트 User 생성
-        Optional<User> optionalUser = userRepositroy.findByWalletAddressAndBlockchain(loginRequestDTO.getWallet_address(), loginRequestDTO.getBlockchain());
+        Optional<User> optionalUser = userRepositroy.findByWalletAddressAndBlockchain(registerReqDTO.getWallet_address(), registerReqDTO.getBlockchain());
 
         if(optionalUser.isEmpty()) {
             System.out.println("유저없음");
@@ -119,7 +113,7 @@ public class AuthServiceTests {
 
         User user = optionalUser.get();
 
-        if(!user.getBlockchain().equals(loginRequestDTO.getBlockchain())) {
+        if(!user.getBlockchain().equals(registerReqDTO.getBlockchain())) {
             System.out.println("블록체인 주소 다름");
             throw new RuntimeException("블록체인 주소 다름");
         }

@@ -29,13 +29,16 @@ public interface NftAssetRepository extends JpaRepository<NftAsset, Long> {
     List<Long> ownedIds(String ownerAddress);
 
     // assetInfo01
-    @Query("SELECT n.id FROM NftAsset n WHERE n.id = ?1 AND n.ownerAddress = ?2 AND n.quantity = 0")
+    @Query("SELECT n.id FROM NftAsset n WHERE n.id = ?1 AND n.ownerAddress = ?2 AND n.quantity > 0")
     Optional<Long> optionalAssetInfo01(Long id, String ownerAddress);
+
+    // assetInfo02 endIds 널용
+    @Query("SELECT n.id FROM NftAsset n WHERE n.id = ?1 AND n.ownerAddress = ?2 AND n.quantity = 0")
+    Optional<Long> optionalAssetInfo02Null(Long id, String ownerAddress);
 
     // assetInfo02
     @Query("SELECT n.id FROM NftAsset n WHERE n.id = ?1 AND n.ownerAddress = ?2 AND n.quantity = 0 AND n.id NOT IN ?3")
-    Optional<Long> optionalAssetInfo02(Long id, String ownerAddress, List<Long> endIds);
-
+    Optional<Long> optionalAssetInfo02NotNull(Long id, String ownerAddress, List<Long> endIds);
     // assetIds
     @Query("SELECT n FROM NftAsset n WHERE n.ownerAddress = ?1 AND n.id IN ?2")
     List<NftAsset> assetIds(String ownerAddress, List<Long> ids);
@@ -48,6 +51,10 @@ public interface NftAssetRepository extends JpaRepository<NftAsset, Long> {
     @Query("SELECT COUNT(DISTINCT n.tokenId) FROM NftAsset n WHERE n.ownerAddress = ?1 AND n.isMint = 0")
     Long freezeCount(String ownerAddress);
 
+
+    // ownerCount
+    @Query("SELECT COUNT(n) FROM NftAsset n WHERE n.ownerAddress = ?1 AND n.id IN ?2")
+    int onwerCount(String ownerAddress, List<Long> assetIds);
 
 
 }

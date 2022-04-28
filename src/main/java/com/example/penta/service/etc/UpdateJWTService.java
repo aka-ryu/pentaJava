@@ -1,4 +1,4 @@
-package com.example.penta.service;
+package com.example.penta.service.etc;
 
 import com.example.penta.entity.PersonalAccessToken;
 import com.example.penta.repository.PersonalAccessTokenRepository;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Log4j2
 @Service
-public class UpdateAtService {
+public class UpdateJWTService {
 
     @Autowired
     private PersonalAccessTokenRepository personalAccessTokenRepository;

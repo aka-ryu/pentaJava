@@ -1,21 +1,24 @@
 package com.example.penta.service;
 
 import com.example.penta.dto.protocol.request.auth.RegisterReqDTO;
+import com.example.penta.dto.protocol.request.user.UserItemCountReqDTO;
+import com.example.penta.dto.protocol.response.ProfileInfoResponseDTO;
+import com.example.penta.dto.protocol.response.TokenInfoResponseDTO;
+import com.example.penta.dto.protocol.response.UserItemCountResponseDTO;
 import com.example.penta.entity.*;
 import com.example.penta.repository.*;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@SpringBootTest
 @Log4j2
-public class UserItemTests {
+@Service
+public class UserService {
+
     @Autowired
     private UserRepositroy userRepositroy;
     @Autowired
@@ -36,59 +39,12 @@ public class UserItemTests {
     @Autowired
     private UserFavoriteRepository userFavoriteRepository;
 
+    @Autowired
+    private AuthService authService;
 
-    @Test
-    @Transactional
-    public void userItemCount() {
+    public UserItemCountResponseDTO userItemCount(UserItemCountReqDTO userItemCountReqDTO) {
 
-        RegisterReqDTO registerReqDTO = RegisterReqDTO.builder()
-                .wallet_address("0xe33f5e0c73b19c13f873ac9ccf1e17f4735cd2fe")
-                .blockchain("ethereum")
-                .build();
-
-        // 유효한 값이 들어왔는지 확인
-        if (registerReqDTO.getBlockchain().isEmpty() || registerReqDTO.getWallet_address().isEmpty()
-                || registerReqDTO.getBlockchain().equals("") || registerReqDTO.getWallet_address().equals("")) {
-
-            System.out.println("blockchain, wallet_address 값이 없음");
-            throw new RuntimeException("blockchain, wallet_address 값 없음");
-        }
-
-        // walletAddress 소문자처리
-        registerReqDTO.setWallet_address(registerReqDTO.getWallet_address().toLowerCase());
-
-        // 받은 블록체인,지갑주소로 유저 조회
-        Optional<User> optionalUser = userRepositroy.findByWalletAddressAndBlockchain(registerReqDTO.getWallet_address(), registerReqDTO.getBlockchain());
-
-        if (optionalUser.isEmpty()) {
-            log.warn("유저없음");
-            throw new RuntimeException("유저없음");
-        }
-
-        User user = optionalUser.get();
-
-        // 유저의 pk로 생성된 토큰 조회
-        Optional<PersonalAccessToken> optionalPersonalAccessToken = personalAccessTokenRepository.findByTokenableId(user.getId());
-
-        if (optionalPersonalAccessToken.isEmpty()) {
-            log.warn("토큰없음");
-            throw new RuntimeException("토큰없음");
-        }
-
-        PersonalAccessToken personalAccessToken = optionalPersonalAccessToken.get();
-
-        // 유저의 토큰 체크 (jwt body로 지갑주소를 넣었음)
-        if (!user.getWalletAddress().equals(personalAccessToken.getToken())) {
-            log.warn("토큰 정보 오류");
-            throw new RuntimeException("토큰 정보 오류");
-        }
-
-        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByUser(user);
-
-        if (optionalUserProfile.isEmpty()) {
-            log.warn("유저프로필 없음");
-            throw new RuntimeException("유저프로필 없음");
-        }
+        User user = authService.logedUserValidation(userItemCountReqDTO.getWallet_address(), userItemCountReqDTO.getBlockchain());
 
         List<NftAsset> assetInfo = nftAssetRepository.findAllByOwnerAddress(user.getWalletAddress());
         List<Long> arrayIds = nftAssetRepository.arrayIds(user.getWalletAddress());
@@ -170,9 +126,66 @@ public class UserItemTests {
             ownerCount = nftAssetRepository.onwerCount(user.getWalletAddress(), assetIds);
         }
 
+        Long allAssetCount = nftAssetRepository.allAssetCount(user.getWalletAddress(), user.getWalletAddress());
 
+        Long createCount = nftAssetRepository.findByCreatorAddress(user.getWalletAddress()).stream().count();
+
+        Long favoriteCount = userFavoriteRepository.findByUser(user).stream().count();
+
+        Long freezeCount = nftAssetRepository.freezeCount(user.getWalletAddress());
+
+        Long displayCount = nftMarketRepository.displayCount(arrayIds);
+
+        List<Long> auctionIds = nftMarketRepository.auctionIds();
+
+        Long myBidCount = nftEventHistoryRepository.myBidCount(user.getWalletAddress(), auctionIds);
+
+        UserItemCountResponseDTO userItemCountResponseDTO = UserItemCountResponseDTO.builder()
+                .allAssetCount(allAssetCount.intValue())
+                .createCount(createCount.intValue())
+                .ownerCount(ownerCount)
+                .favoriteCount(favoriteCount.intValue())
+                .displayCount(displayCount.intValue())
+                .myBidCount(myBidCount.intValue())
+                .freezCount(freezeCount.intValue())
+                .build();
+
+        return userItemCountResponseDTO;
 
     }
+
+    public TokenInfoResponseDTO tokenInfo(RegisterReqDTO registerReqDTO) {
+
+        User user = authService.logedUserValidation(registerReqDTO.getWallet_address(), registerReqDTO.getBlockchain());
+
+        Optional<PersonalAccessToken> optionalPersonalAccessToken = personalAccessTokenRepository.findByTokenableId(user.getId());
+
+        // 이미 logedUserValidation 에서 토큰조회 했기 때문에 무조건 값이 존재함 Optioanl Null 체크 필요 x
+        TokenInfoResponseDTO tokenInfoResponseDTO = TokenInfoResponseDTO.builder()
+                .wallet_address(registerReqDTO.getWallet_address())
+                .personalAccessToken(optionalPersonalAccessToken.get())
+                .build();
+
+        return tokenInfoResponseDTO;
+    }
+
+    public ProfileInfoResponseDTO profileInfo(RegisterReqDTO registerReqDTO) {
+
+        User user = authService.logedUserValidation(registerReqDTO.getWallet_address(), registerReqDTO.getBlockchain());
+
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByUser(user);
+
+        if(optionalUserProfile.isEmpty()) {
+            log.warn("유저프로필 없음");
+            throw new RuntimeException("유저프로필 없음");
+        }
+
+        ProfileInfoResponseDTO profileInfoResponseDTO = ProfileInfoResponseDTO.builder()
+                .wallet_address(registerReqDTO.getWallet_address())
+                .userProfile(optionalUserProfile.get())
+                .is_certified(user.getIsCertified())
+                .build();
+
+        return profileInfoResponseDTO;
+    }
 }
-
-

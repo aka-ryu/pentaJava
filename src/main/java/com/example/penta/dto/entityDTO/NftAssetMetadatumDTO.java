@@ -1,7 +1,6 @@
-package com.example.penta.dto;
+package com.example.penta.dto.entityDTO;
 
 import com.example.penta.entity.NftAsset;
-import com.example.penta.entity.NftAssetMetadatum;
 import lombok.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

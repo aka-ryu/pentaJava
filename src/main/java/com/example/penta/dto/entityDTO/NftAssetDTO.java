@@ -1,9 +1,7 @@
-package com.example.penta.dto;
+package com.example.penta.dto.entityDTO;
 
-import com.example.penta.entity.NftAsset;
 import lombok.*;
 
-import java.time.Instant;
 import java.util.Date;
 
 @Data

@@ -1,4 +1,4 @@
-package com.example.penta.dto;
+package com.example.penta.dto.entityDTO;
 
 import lombok.*;
 
