@@ -100,8 +100,8 @@ public class AuthService {
         }
 
         // jwt 토큰생성
-        String accessToken = tokenProvider.createAccessToken(user.getWalletAddress());
-        String refreshToken = tokenProvider.createRefreshToken();
+        String accessToken = tokenProvider.accessToken(user.getWalletAddress());
+
 
 
         // 이미 저장된 엑세스토큰이 있는지 확인

@@ -11,4 +11,5 @@ import java.util.List;
 public interface UserFavoriteRepository extends JpaRepository<UserFavorite, Long> {
 
     List<UserFavorite> findByUser(User user);
+
 }

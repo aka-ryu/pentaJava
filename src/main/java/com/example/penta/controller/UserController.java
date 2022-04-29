@@ -28,9 +28,6 @@ public class UserController {
     @RequestMapping("/useritem_count")
     public ResponseEntity<?> userItemCount(@Valid UserItemCountReqDTO userItemCountReqDTO, @AuthenticationPrincipal String token){
 
-        
-        log.info("유저아이템 컨트롤러 접속");
-        try {
             UserItemCountResponseDTO userItemCountResponseDTO = userService.userItemCount(userItemCountReqDTO);
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .success(true)
@@ -40,26 +37,13 @@ public class UserController {
                     .build();
 
             return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-            String errMsg = e.getMessage();
 
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .success(false)
-                    .code(401)
-                    .message(errMsg)
-                    .build();
-
-            return ResponseEntity.ok().body(responseDTO);
-        }
 
     }
 
     @PostMapping("/tokeninfo")
     public ResponseEntity<?> tokenInfo(RegisterReqDTO registerReqDTO, @AuthenticationPrincipal String userId) {
 
-        log.info("토큰인포 진입");
-        try {
             TokenInfoResponseDTO tokenInfoResponseDTO = userService.tokenInfo(registerReqDTO);
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .success(true)
@@ -69,24 +53,12 @@ public class UserController {
                     .build();
 
             return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-            String errMsg = e.getMessage();
 
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .success(false)
-                    .code(401)
-                    .message(errMsg)
-                    .build();
-
-            return ResponseEntity.ok().body(responseDTO);
-        }
     }
 
     @PostMapping("/profileinfo")
     public ResponseEntity<?> profileInfo(@AuthenticationPrincipal String userId, RegisterReqDTO registerReqDTO) {
 
-        try {
             ProfileInfoResponseDTO profileInfoResponseDTO = userService.profileInfo(registerReqDTO);
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .success(true)
@@ -96,17 +68,6 @@ public class UserController {
                     .build();
 
             return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-            String errMsg = e.getMessage();
 
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .success(false)
-                    .code(401)
-                    .message(errMsg)
-                    .build();
-
-            return ResponseEntity.ok().body(responseDTO);
-        }
     }
 }

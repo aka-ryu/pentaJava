@@ -16,7 +16,7 @@ public interface NftMarketRepository extends JpaRepository<NftMarket, Long> {
     List<NftMarket> marketInfo(List<NftAsset> ownedInfo);
 
     //marketAsset
-    @Query("SELECT n.nftAsset.id FROM NftMarket n WHERE n.isEnd = 0 AND n.nftAsset IN ?1")
+    @Query("SELECT nftAsset.id FROM NftMarket  WHERE isEnd = 0 AND nftAsset IN ?1")
     List<Long> marketAsset(List<NftAsset> ownedInfo);
 
     //endInfo
@@ -34,4 +34,6 @@ public interface NftMarketRepository extends JpaRepository<NftMarket, Long> {
     //auctionIds
     @Query("SELECT n.id FROM NftMarket n WHERE n.isDisplay = 1 AND n.isEnd = 0 AND n.typeTrade = 1")
     List<Long> auctionIds();
+
+
 }

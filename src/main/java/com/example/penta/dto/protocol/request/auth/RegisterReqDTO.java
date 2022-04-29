@@ -13,9 +13,7 @@ public class RegisterReqDTO {
 
     @NotBlank
     private String wallet_address;
-
     @NotBlank
     private String blockchain;
-
     private String signature;
 }

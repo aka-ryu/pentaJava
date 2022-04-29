@@ -1,5 +1,6 @@
 package com.example.penta.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -30,13 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        String userId = null;
+
         try {
             String token = parseBearerToken(request);
 
             if(token != null && !token.equalsIgnoreCase("null")) {
-                String userId = tokenProvider.validateAndGetUserId(token);
 
-                AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                  AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userId,
                         null,
                         AuthorityUtils.NO_AUTHORITIES
@@ -65,5 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
+    private String refreshToken() {
+        return "토큰만료야 바부야~";
+    }
 
 }

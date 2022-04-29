@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.Valid;
 
@@ -26,11 +27,8 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> userRegister(@Valid RegisterReqDTO registerReqDTO) {
 
-        log.info("레지스터 진입");
-        try {
             User user = authService.registerUser(registerReqDTO);
             LoginResponseDTO loginResponseDTO = authService.loginUser(registerReqDTO, user);
-
 
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .success(true)
@@ -39,18 +37,6 @@ public class AuthController {
                     .build();
 
             return ResponseEntity.ok().body(responseDTO);
-
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-            String errMsg = e.getMessage();
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .success(false)
-                    .code(401)
-                    .message(errMsg)
-                    .build();
-
-            return ResponseEntity.ok().body(responseDTO);
-        }
     }
 
 

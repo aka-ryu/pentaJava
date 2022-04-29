@@ -16,6 +16,8 @@ public interface NftAssetRepository extends JpaRepository<NftAsset, Long> {
     // assetInfo
     List<NftAsset> findAllByOwnerAddress(String ownerAddress);
 
+    List<NftAsset> findByCreatorAddressAndOwnerAddress(String CreatorAddress, String OwnedAddress);
+
     // arrayIds
     @Query("SELECT n.id FROM NftAsset n WHERE n.ownerAddress = ?1")
     List<Long> arrayIds(String ownerAddress);
@@ -57,4 +59,7 @@ public interface NftAssetRepository extends JpaRepository<NftAsset, Long> {
     int onwerCount(String ownerAddress, List<Long> assetIds);
 
 
+    // assetInfo-all-assetInfo
+    @Query("SELECT n FROM NftAsset n WHERE n.creatorAddress = ?1 AND n.ownerAddress = ?2")
+    List<NftAsset> assetInfoAllAssetInfo(String creatorAddress, String ownerAddress);
 }
